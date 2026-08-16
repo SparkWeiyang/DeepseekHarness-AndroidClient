@@ -27,7 +27,7 @@
 
 - 手动录入（名称/主机/端口/HTTPS）
 - **局域网扫描**：并发探测当前 `/24` 网段 3080 端口，一键发现 PC harness
-- **本机 Harness**：`adb reverse tcp:3080 tcp:3080` 直连 PC（不经局域网），配套 PC 端隧道保持脚本 `scripts/dsh-adb-tunnel.ps1`
+- **本地 Harness（Linux VM 隔离实例）**：虚拟机里跑一套**完整、隔离的原版 Harness**（独立 `~/.dsh`、端口 3090），手机经 `adb reverse` 直连（详见 [vm/README.md](vm/README.md)）
 - 明文 HTTP 与自签名 HTTPS（信任用户证书）均可
 
 ## 技术栈
@@ -94,7 +94,11 @@ dsh web --host 0.0.0.0 --port 3080
 ### 手机端连接
 
 1. **局域网**：App 内点 🔍 扫描（自动发现 `192.168.x.x:3080`），或手动添加主机/端口。
-2. **本地（USB/无线调试直连）**：PC 端运行 [`scripts/dsh-adb-tunnel.ps1`](scripts/dsh-adb-tunnel.ps1) 保持 `adb reverse`，App 内选择「本机 Harness (127.0.0.1:3080)」。
+2. **本地（Linux VM 隔离实例）**：
+   - VM 内：`curl -fsSL …/vm/harness-vm-setup.sh | bash`（部署独立 Harness，端口 3090）
+   - VM 端口转发：3090 → 主机 `127.0.0.1:3090`（WSL2 零配置；VirtualBox/VMware 见 [vm/README.md](vm/README.md)）
+   - 主机：运行 [`scripts/dsh-adb-tunnel.ps1`](scripts/dsh-adb-tunnel.ps1) 保持 `adb reverse tcp:3090`
+   - App 内点顶部「🐧 本地 Harness（Linux VM）」连接
 3. 连接后：会话 Tab 选工作区/搜索/新建会话 → 进入聊天页发消息。
 
 ## 安全说明

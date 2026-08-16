@@ -15,6 +15,9 @@ sealed interface Screen {
     data class Shell(val server: ServerConfig) : Screen
 }
 
+/** 本地 Harness（Linux VM 隔离实例）约定的转发端口；局域网主机 harness 用 3080。 */
+const val LOCAL_HARNESS_PORT = 3090
+
 @Composable
 fun HarnessApp(repository: ServerRepository) {
     var servers by remember { mutableStateOf(repository.load()) }
@@ -68,15 +71,15 @@ fun HarnessApp(repository: ServerRepository) {
                 screen = Screen.Edit(cfg.id)
             },
             onAddLocal = {
-                val existing = servers.firstOrNull { it.host == "127.0.0.1" && it.port == 3080 }
+                val existing = servers.firstOrNull { it.host == "127.0.0.1" && it.port == LOCAL_HARNESS_PORT }
                 if (existing != null) {
                     screen = Screen.Shell(existing)
                 } else {
                     val cfg = ServerConfig(
                         id = UUID.randomUUID().toString(),
-                        name = "本机 Harness",
+                        name = "本地 Harness",
                         host = "127.0.0.1",
-                        port = 3080,
+                        port = LOCAL_HARNESS_PORT,
                         https = false,
                         isDefault = servers.isEmpty()
                     )

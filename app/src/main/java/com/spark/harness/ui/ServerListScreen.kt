@@ -128,7 +128,7 @@ fun ServerListScreen(
     }
 }
 
-/** 本机 Harness 快捷卡：adb reverse 隧道直连 PC（不经局域网）。 */
+/** 本地 Harness 快捷卡：Linux VM 隔离实例，经 adb 隧道直连（与局域网隔离）。 */
 @Composable
 private fun LocalHarnessCard(onConnect: () -> Unit) {
     Card(
@@ -143,13 +143,13 @@ private fun LocalHarnessCard(onConnect: () -> Unit) {
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("⚡", style = MaterialTheme.typography.titleMedium)
+            Text("🐧", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text("本机 Harness", style = MaterialTheme.typography.titleMedium)
+                Text("本地 Harness（Linux VM）", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    "127.0.0.1:3080 · 经 adb 隧道直连 PC（无需局域网）",
+                    "127.0.0.1:3090 · 虚拟机隔离实例 · 与局域网完全独立",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

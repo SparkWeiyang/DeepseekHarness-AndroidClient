@@ -2,6 +2,15 @@
 
 本项目的所有显著变更记录于此。
 
+## [Unreleased]
+
+### 新增
+- 「本地 Harness」重新设计为 **Linux VM 隔离实例**（与局域网完全隔离）：
+  - 端口约定：局域网 3080 / 本地（VM）3090
+  - `vm/harness-vm-setup.sh`：VM 内一键部署完整原版 Harness 生态（独立 `~/.dsh`，可选 dsh-lan 插件 + systemd 自启）
+  - `vm/README.md`：WSL2 / VirtualBox / VMware 三种虚拟机的端口转发配置
+  - App 服务器列表常驻「🐧 本地 Harness（Linux VM）」入口；连接失败时给出 VM→转发→隧道三步引导
+
 ## [1.1.0] - 2026-08-16
 
 ### 新增

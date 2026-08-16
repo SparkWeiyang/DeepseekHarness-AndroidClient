@@ -207,7 +207,7 @@ fun SessionsTab(
                         modifier = Modifier.padding(horizontal = 32.dp)
                     ) {
                         Text(
-                            if (server.host == "127.0.0.1") "无法连接本机 Harness" else "连接失败",
+                            if (server.host == "127.0.0.1") "无法连接本地 Harness（VM）" else "连接失败",
                             style = MaterialTheme.typography.titleMedium
                         )
                         Spacer(Modifier.height(6.dp))
@@ -219,9 +219,11 @@ fun SessionsTab(
                         if (server.host == "127.0.0.1") {
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                "本机 Harness 依赖 adb 隧道。请在 PC 端运行：\n" +
-                                    "powershell -ExecutionPolicy Bypass -File scripts\\dsh-adb-tunnel.ps1\n" +
-                                    "（或确认 USB / 无线调试已连接）",
+                                "本地 Harness = Linux VM 隔离实例（端口 3090）。请确认：\n" +
+                                    "1. VM 内已运行 dsh web --port 3090\n" +
+                                    "2. VM 端口已转发到主机 127.0.0.1:3090\n" +
+                                    "3. PC 端已运行 scripts\\dsh-adb-tunnel.ps1\n" +
+                                    "详见 vm/README.md",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
