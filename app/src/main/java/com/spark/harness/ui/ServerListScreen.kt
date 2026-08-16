@@ -72,41 +72,46 @@ fun ServerListScreen(
             }
         }
     ) { padding ->
-        if (servers.isEmpty()) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("还没有服务器", style = MaterialTheme.typography.titleMedium)
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "点击右下角 + 添加 PC harness 地址，\n或点右上角扫描局域网。",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    TextButton(onClick = onAddLocal) { Text("连接本机 Harness (127.0.0.1:3080)") }
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            // 本机 Harness 快捷入口（常驻，无论列表是否为空）
+            LocalHarnessCard(onConnect = onAddLocal)
+            Spacer(Modifier.height(8.dp))
+
+            if (servers.isEmpty()) {
+                Box(
+                    Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("还没有服务器", style = MaterialTheme.typography.titleMedium)
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "点击右下角 + 添加 PC harness 地址，\n或点右上角扫描局域网。",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(12.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(servers, key = { it.id }) { server ->
-                    ServerRow(
-                        server = server,
-                        onConnect = { onConnect(server) },
-                        onEdit = { onEdit(server) },
-                        onDelete = { onDelete(server.id) },
-                        onSetDefault = { onSetDefault(server.id) }
-                    )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(servers, key = { it.id }) { server ->
+                        ServerRow(
+                            server = server,
+                            onConnect = { onConnect(server) },
+                            onEdit = { onEdit(server) },
+                            onDelete = { onDelete(server.id) },
+                            onSetDefault = { onSetDefault(server.id) }
+                        )
+                    }
                 }
             }
         }
@@ -120,6 +125,41 @@ fun ServerListScreen(
                 onScanPick(host, port)
             }
         )
+    }
+}
+
+/** 本机 Harness 快捷卡：adb reverse 隧道直连 PC（不经局域网）。 */
+@Composable
+private fun LocalHarnessCard(onConnect: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .clickable(onClick = onConnect)
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("⚡", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                Text("本机 Harness", style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "127.0.0.1:3080 · 经 adb 隧道直连 PC（无需局域网）",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Text(
+                "连接 ›",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 

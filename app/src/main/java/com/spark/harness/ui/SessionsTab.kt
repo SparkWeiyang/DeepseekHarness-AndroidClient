@@ -202,7 +202,31 @@ fun SessionsTab(
                     CircularProgressIndicator()
                 }
                 error != null && sessions.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(error!!, color = MaterialTheme.colorScheme.error)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    ) {
+                        Text(
+                            if (server.host == "127.0.0.1") "无法连接本机 Harness" else "连接失败",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            error!!,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        if (server.host == "127.0.0.1") {
+                            Spacer(Modifier.height(10.dp))
+                            Text(
+                                "本机 Harness 依赖 adb 隧道。请在 PC 端运行：\n" +
+                                    "powershell -ExecutionPolicy Bypass -File scripts\\dsh-adb-tunnel.ps1\n" +
+                                    "（或确认 USB / 无线调试已连接）",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
                 searchResults != null -> SearchResults(searchResults!!, onOpen)
                 else -> SessionGroupedList(
